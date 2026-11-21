@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6
+    container_name: pm_internship_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: pm_internship
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  ai-service:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: pm_internship_ai_service
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    environment:
+      FLASK_ENV: development
+      PYTHONUNBUFFERED: 1
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5001/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: pm_internship_server
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      ai-service:
+        condition: service_healthy
+    env_file:
+      - .env.example
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/pm_internship
+      - AI_SERVICE_URL=http://ai-service:5001
+      - CLIENT_URL=http://localhost:3000
+    volumes:
+      - ./server/uploads:/app/uploads
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: pm_internship_client
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
+
+volumes:
+  mongo_data:
+    name: pm_internship_mongo_data

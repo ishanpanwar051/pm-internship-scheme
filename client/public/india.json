@@ -1,0 +1,36 @@
+{
+  "type": "Topology",
+  "arcs": [
+    [[77.0, 28.5], [77.3, 28.8], [77.1, 28.7], [77.0, 28.5]],
+    [[72.8, 19.0], [73.5, 20.0], [74.5, 19.5], [74.0, 18.0], [72.8, 19.0]],
+    [[77.5, 12.9], [78.0, 13.5], [76.5, 14.0], [76.0, 12.5], [77.5, 12.9]],
+    [[80.2, 13.0], [80.0, 11.5], [78.5, 10.5], [79.0, 12.5], [80.2, 13.0]],
+    [[80.0, 26.8], [81.5, 27.5], [82.5, 26.0], [80.5, 25.0], [80.0, 26.8]],
+    [[72.5, 23.0], [73.0, 24.0], [71.0, 23.5], [70.5, 22.0], [72.5, 23.0]],
+    [[78.4, 17.3], [79.5, 18.0], [79.0, 16.5], [77.8, 16.8], [78.4, 17.3]],
+    [[75.8, 26.9], [76.5, 27.8], [74.0, 27.5], [73.5, 25.5], [75.8, 26.9]],
+    [[88.3, 22.5], [88.8, 24.0], [87.5, 23.5], [87.8, 21.8], [88.3, 22.5]],
+    [[77.4, 23.2], [79.0, 24.0], [78.5, 22.0], [76.0, 22.5], [77.4, 23.2]]
+  ],
+  "transform": {
+    "scale": [1.0, 1.0],
+    "translate": [0.0, 0.0]
+  },
+  "objects": {
+    "india": {
+      "type": "GeometryCollection",
+      "geometries": [
+        { "type": "Polygon", "arcs": [[0]], "id": "DL", "properties": { "name": "Delhi", "st_nm": "Delhi" } },
+        { "type": "Polygon", "arcs": [[1]], "id": "MH", "properties": { "name": "Maharashtra", "st_nm": "Maharashtra" } },
+        { "type": "Polygon", "arcs": [[2]], "id": "KA", "properties": { "name": "Karnataka", "st_nm": "Karnataka" } },
+        { "type": "Polygon", "arcs": [[3]], "id": "TN", "properties": { "name": "Tamil Nadu", "st_nm": "Tamil Nadu" } },
+        { "type": "Polygon", "arcs": [[4]], "id": "UP", "properties": { "name": "Uttar Pradesh", "st_nm": "Uttar Pradesh" } },
+        { "type": "Polygon", "arcs": [[5]], "id": "GJ", "properties": { "name": "Gujarat", "st_nm": "Gujarat" } },
+        { "type": "Polygon", "arcs": [[6]], "id": "TG", "properties": { "name": "Telangana", "st_nm": "Telangana" } },
+        { "type": "Polygon", "arcs": [[7]], "id": "RJ", "properties": { "name": "Rajasthan", "st_nm": "Rajasthan" } },
+        { "type": "Polygon", "arcs": [[8]], "id": "WB", "properties": { "name": "West Bengal", "st_nm": "West Bengal" } },
+        { "type": "Polygon", "arcs": [[9]], "id": "MP", "properties": { "name": "Madhya Pradesh", "st_nm": "Madhya Pradesh" } }
+      ]
+    }
+  }
+}
