@@ -74,6 +74,6 @@ const AllocationSchema = new mongoose.Schema(
 );
 
 // Index for rapid queries and duplicate prevention
-AllocationSchema.index({ internId: 1, slotId: 1 });
+AllocationSchema.index({ internId: 1, slotId: 1 }, { unique: true });
 
 module.exports = mongoose.model('Allocation', AllocationSchema);

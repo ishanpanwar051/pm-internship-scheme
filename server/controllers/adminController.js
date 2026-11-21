@@ -100,7 +100,7 @@ exports.getDashboard = async (req, res) => {
     // --- Chart 5: State-wise Distribution ---
     const stateProfiles = await InternProfile.aggregate([
       { $group: { _id: '$personalInfo.state', count: { $sum: 1 } } },
-      { $match: { _id: { $ne: null, $ne: '' } } },
+      { $match: { _id: { $nin: [null, ''] } } },
       { $sort: { count: -1 } },
     ]);
 
@@ -147,9 +147,10 @@ exports.getUsers = async (req, res) => {
     if (role) query.role = role;
     if (typeof isBlocked === 'string') query.isBlocked = isBlocked === 'true';
     if (search) {
+      const safeSearch = String(search).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
+        { name: { $regex: safeSearch, $options: 'i' } },
+        { email: { $regex: safeSearch, $options: 'i' } },
       ];
     }
 
@@ -177,6 +178,10 @@ exports.toggleBlockUser = async (req, res) => {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
+    if (user.role === 'admin' || user._id.toString() === req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Administrator accounts cannot be blocked.' });
+    }
+
     user.isBlocked = !user.isBlocked;
     await user.save();
 
@@ -201,6 +206,10 @@ exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    if (user.role === 'admin' || user._id.toString() === req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Administrator accounts cannot be deleted.' });
+    }
 
     // Cascade deletion of dependent documents
     if (user.role === 'intern') {
@@ -373,7 +382,7 @@ exports.overrideAllocation = async (req, res) => {
 
 // @route   POST /api/v1/admin/engine/run
 // Recomputes each slot's filledSeats from authoritative live allocations.
-// Keeps reruns capacity-safe and frees seats when a match is released.
+// Keeps reruns capacity-safe and frees seats when a match is released, resetting slots with 0 active allocations.
 const recalculateFilledSeats = async () => {
   const activeCounts = await Allocation.aggregate([
     {
@@ -383,9 +392,19 @@ const recalculateFilledSeats = async () => {
     },
     { $group: { _id: '$slotId', count: { $sum: 1 } } },
   ]);
-  for (const group of activeCounts) {
+
+  const activeMap = new Map();
+  activeCounts.forEach((group) => {
     if (group._id) {
-      await InternshipSlot.findByIdAndUpdate(group._id, { filledSeats: group.count });
+      activeMap.set(group._id.toString(), group.count);
+    }
+  });
+
+  const allSlots = await InternshipSlot.find({}, '_id filledSeats');
+  for (const slot of allSlots) {
+    const trueCount = activeMap.get(slot._id.toString()) || 0;
+    if (slot.filledSeats !== trueCount) {
+      await InternshipSlot.findByIdAndUpdate(slot._id, { filledSeats: trueCount });
     }
   }
 };
@@ -445,10 +464,10 @@ const executeEngineRunPipeline = async ({ engineLog, userId, startTime, mode }) 
 
     await EngineLog.findByIdAndUpdate(engineLog._id, {
       currentStep: 4,
-      stepMessage: 'Step 4/8: Vectorizing competencies and computing TF-IDF cosine similarity matrix...',
+      stepMessage: 'Step 4/6: Matching candidates based on skills, location, and norms...',
     });
 
-    // Step 4 & 5 & 6: Trigger Flask microservice with configurable weights
+    // Step 4 & 5 & 6: Trigger Matching Service with configurable weights
     const systemConfig = await SystemConfig.getConfig();
     const aiResponse = await triggerMatching(
       formattedInterns,
@@ -466,15 +485,15 @@ const executeEngineRunPipeline = async ({ engineLog, userId, startTime, mode }) 
     );
 
     await EngineLog.findByIdAndUpdate(engineLog._id, {
-      currentStep: 6,
-      stepMessage: 'Step 6/8: Solving optimal bipartite assignment via Hungarian Algorithm...',
+      currentStep: 5,
+      stepMessage: 'Step 5/6: Applying reservation norms as per Government of India guidelines...',
     });
 
     const newAllocations = aiResponse.allocations || [];
 
     await EngineLog.findByIdAndUpdate(engineLog._id, {
-      currentStep: 7,
-      stepMessage: `Step 7/8: Persisting ${newAllocations.length} matched allocations to database...`,
+      currentStep: 6,
+      stepMessage: `Step 6/6: Saving ${newAllocations.length} recommendations...`,
     });
 
     // Step 7: Save allocations to DB
@@ -508,25 +527,46 @@ const executeEngineRunPipeline = async ({ engineLog, userId, startTime, mode }) 
       stepMessage: 'Step 8/8: Dispatching notification alerts to matched participants...',
     });
 
-    // Step 8: Send alerts (non-blocking)
-    for (const alloc of newAllocations.slice(0, 50)) { // notify top 50 in current batch
+    // Step 8: Send alerts to candidates (non-blocking)
+    for (const alloc of newAllocations.slice(0, 50)) {
       try {
         const internProfile = await InternProfile.findById(alloc.internId).populate('userId');
         const slot = await InternshipSlot.findById(alloc.slotId).populate('companyId');
         if (internProfile?.userId && slot) {
           await Notification.create({
             userId: internProfile.userId._id,
-            title: 'New Internship Allocation Available!',
-            message: `You have been matched with ${slot.title} at ${slot.companyId.companyName} (${Math.round(alloc.matchScore * 100)}% match).`,
+            title: 'Internship Recommendation Ready',
+            message: `You have been matched with ${slot.title} at ${slot.companyId?.companyName || 'Host Enterprise'}.`,
             type: 'success',
             link: '/intern/allocation',
           });
 
           sendAllocationReadyEmail(internProfile.userId, {
             slotTitle: slot.title,
-            companyName: slot.companyId.companyName,
+            companyName: slot.companyId?.companyName || 'Host Enterprise',
             matchScore: alloc.matchScore,
           });
+        }
+      } catch (e) {
+        // Safe continue
+      }
+    }
+
+    // Notify companies about ready candidates
+    const distinctCompanyIds = [...new Set(newAllocations.map((a) => a.companyId?.toString()).filter(Boolean))];
+    for (const compId of distinctCompanyIds) {
+      try {
+        const comp = await CompanyProfile.findById(compId).populate('userId');
+        if (comp?.userId) {
+          const matchCount = newAllocations.filter((a) => a.companyId?.toString() === compId).length;
+          await Notification.create({
+            userId: comp.userId._id,
+            title: 'Candidate Recommendations Available',
+            message: `${matchCount} candidate match(es) have been prepared for your internship openings.`,
+            type: 'success',
+            link: '/company/matches',
+          });
+          sendCompanyMatchesReadyEmail(comp.userId, comp.companyName, matchCount);
         }
       } catch (e) {
         // Safe continue
@@ -538,8 +578,8 @@ const executeEngineRunPipeline = async ({ engineLog, userId, startTime, mode }) 
 
     await EngineLog.findByIdAndUpdate(engineLog._id, {
       status: 'Success',
-      currentStep: 8,
-      stepMessage: `Engine run completed successfully in ${duration}s. Allocated ${newAllocations.length} positions.`,
+      currentStep: 6,
+      stepMessage: `Matching completed in ${duration}s. Recommended ${newAllocations.length} candidate(s).`,
       totalInterns: interns.length,
       totalSlots: slots.length,
       totalAllocated: newAllocations.length,
@@ -553,37 +593,46 @@ const executeEngineRunPipeline = async ({ engineLog, userId, startTime, mode }) 
       details: { totalAllocated: newAllocations.length, duration },
     });
 
-    console.log(`[Engine] ${mode === 'reallocation' ? 'Re-allocation' : 'Run'} success: ${newAllocations.length} allocated in ${duration}s`);
+    console.log(`[Matching] ${mode === 'reallocation' ? 'Re-allocation' : 'Matching'} completed: ${newAllocations.length} matched in ${duration}s`);
   } catch (runErr) {
-    console.error(`[Engine Error] Failure: ${runErr.message}`);
+    console.error(`[Matching Error] Failure: ${runErr.message}`);
     await EngineLog.findByIdAndUpdate(engineLog._id, {
       status: 'Failed',
       errorMessage: runErr.message,
-      stepMessage: `Execution halted: ${runErr.message}`,
+      stepMessage: 'Matching process stopped unexpectedly.',
     });
   }
 };
 
-// Shared runner that guards concurrent runs and kicks off the background job
+// Shared runner that guards concurrent runs with stale job recovery
 const launchEngine = (mode) => async (req, res) => {
   try {
     const runningJob = await EngineLog.findOne({ status: 'Running' });
     if (runningJob) {
-      return res.status(409).json({
-        success: false,
-        message: 'An AI engine run is currently in progress',
-        logId: runningJob._id,
-      });
+      const jobAge = Date.now() - new Date(runningJob.createdAt || runningJob.runAt).getTime();
+      if (jobAge > 5 * 60 * 1000) {
+        // Stale run from previous crash - auto-recover
+        runningJob.status = 'Failed';
+        runningJob.errorMessage = 'Previous run timed out or was interrupted.';
+        runningJob.stepMessage = 'Matching process stopped. You can now start a new run.';
+        await runningJob.save();
+      } else {
+        return res.status(409).json({
+          success: false,
+          message: 'Matching is currently in progress. Please wait for it to complete.',
+          logId: runningJob._id,
+        });
+      }
     }
 
     const engineLog = await EngineLog.create({
       runBy: req.user.id,
       status: 'Running',
       currentStep: 1,
-      totalSteps: 8,
+      totalSteps: 6,
       stepMessage: mode === 'reallocation'
-        ? 'Step 1/8: Re-allocating freed capacity across unallocated profiles...'
-        : 'Step 1/8: Fetching unallocated intern profiles...',
+        ? 'Step 1 of 6: Re-checking available capacity across applicant profiles...'
+        : 'Step 1 of 6: Checking candidate profiles and preferences...',
     });
 
     auditAction({ user: req.user, req }, mode === 'reallocation' ? 'engine.reallocation_initiated' : 'engine.run_initiated', {
@@ -817,12 +866,12 @@ exports.downloadAllocationsCsv = async (req, res) => {
       header: [
         { id: 'internName', title: 'CANDIDATE NAME' },
         { id: 'internEmail', title: 'EMAIL' },
-        { id: 'category', title: 'AFFIRMATIVE QUOTA' },
+        { id: 'category', title: 'CATEGORY' },
         { id: 'company', title: 'COMPANY' },
         { id: 'slot', title: 'POSITION' },
-        { id: 'score', title: 'MATCH SCORE' },
+        { id: 'score', title: 'MATCH %' },
         { id: 'status', title: 'STATUS' },
-        { id: 'allocatedAt', title: 'ALLOCATION DATE' },
+        { id: 'allocatedAt', title: 'DATE' },
       ],
     });
 
@@ -839,10 +888,12 @@ exports.downloadAllocationsCsv = async (req, res) => {
 
     await csvWriter.writeRecords(records);
 
-    res.download(tempFilePath, 'Allocation_AI_Allocations.csv', (err) => {
+    res.download(tempFilePath, 'PM_Internship_Allocations.csv', (err) => {
       if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath);
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+module.exports.recalculateFilledSeats = recalculateFilledSeats;

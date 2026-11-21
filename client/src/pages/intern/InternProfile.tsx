@@ -221,7 +221,7 @@ export const InternProfile: React.FC = () => {
           Candidate Competency Profile
         </h1>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          Complete the 5 sections below to permit sovereign AI matching and affirmative reservation allocation.
+          Complete the sections below so we can match you with the best opportunities based on your skills and preferences.
         </p>
       </div>
 
@@ -347,20 +347,20 @@ export const InternProfile: React.FC = () => {
                   maxLength={12}
                   value={aadhar}
                   onChange={(e) => setAadhar(e.target.value)}
-                  placeholder="12-digit Aadhar (Encrypted SHA-256)"
+                  placeholder="12-digit Aadhaar Number (Securely protected)"
                   className="w-full px-3.5 py-2 text-xs rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-gov-navy"
                 />
               </div>
             </div>
 
-            {/* Affirmative Quota Selection */}
+            {/* Category Selection */}
             <div className="p-4 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2 text-xs font-bold text-gov-navy dark:text-blue-300 uppercase">
                   <Info className="w-4 h-4 text-gov-saffron" />
-                  <span>Constitutional Reservation Category</span>
+                  <span>Category (as per Government norms)</span>
                 </div>
-                <span className="text-[10px] text-slate-500">Statutory Compliance Norms</span>
+                <span className="text-[10px] text-slate-500">Government of India Norms</span>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -517,7 +517,7 @@ export const InternProfile: React.FC = () => {
                 onChange={setSkills}
                 suggestions={SKILLS_SUGGESTIONS}
                 placeholder="Type skill (e.g. Python, Financial Modeling, AutoCAD) and press enter"
-                minTagsMessage="The AI engine requires minimum 3 skills to compute matching vectors."
+                minTagsMessage="Please add at least 3 skills to help us match you with relevant roles."
               />
             </div>
 
@@ -602,11 +602,11 @@ export const InternProfile: React.FC = () => {
           </div>
         )}
 
-        {/* STEP 5: Resume NLP Upload */}
+        {/* STEP 5: Resume Upload */}
         {step === 5 && (
           <div className="space-y-6">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider border-b pb-2 border-slate-200 dark:border-slate-700">
-              Section 5: AI Resume Parsing (PDF)
+              Section 5: Resume Upload & Skill Check (PDF)
             </h3>
 
             <div className="p-8 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-2xl text-center bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-850 transition-colors">
@@ -617,7 +617,7 @@ export const InternProfile: React.FC = () => {
                 Upload Your Resume / CV (PDF)
               </h4>
               <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 max-w-md mx-auto">
-                Our AI engine instantly parses your CV, extracts verified skills across technical, commerce, agricultural, and management fields, and matches you to Top 500 companies.
+                Our system scans your resume, extracts your skills, and helps match you with participating top 500 companies.
               </p>
 
               <label className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold cursor-pointer shadow-md shadow-blue-500/20 transition-all">

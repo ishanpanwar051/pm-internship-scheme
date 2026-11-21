@@ -7,9 +7,13 @@ const { sendWelcomeEmail, sendPasswordResetEmail } = require('../services/emailS
 
 // Helper to generate and attach JWT as httpOnly cookie
 const sendTokenResponse = (user, statusCode, res) => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET environment variable is missing.');
+  }
+
   const token = jwt.sign(
     { id: user._id, role: user.role },
-    process.env.JWT_SECRET || 'pm_internship_super_secret_jwt_key_2024_secure',
+    process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRE || '24h' }
   );
 
@@ -40,7 +44,7 @@ const sendTokenResponse = (user, statusCode, res) => {
 // @desc    Register new Candidate or Company account (Admin registration is strictly forbidden)
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, role, phone, companyName, sector } = req.body;
+    const { name, email, password, role, phone, companyName, sector, state, category } = req.body;
 
     // 1. Strict Type & Parameter Validation (prevents NoSQL injection)
     if (
@@ -99,14 +103,14 @@ exports.register = async (req, res) => {
     if (user.role === 'intern') {
       await InternProfile.create({
         userId: user._id,
-        category: 'General',
-        personalInfo: { state: 'Delhi' },
+        category: typeof category === 'string' && category.trim() ? category.trim() : 'General',
+        personalInfo: { state: typeof state === 'string' && state.trim() ? state.trim() : '' },
       });
     } else if (user.role === 'company') {
       await CompanyProfile.create({
         userId: user._id,
-        companyName: typeof companyName === 'string' && companyName.trim() ? companyName.trim() : `${name.trim()} Corp`,
-        sector: typeof sector === 'string' && sector.trim() ? sector.trim() : 'Technology',
+        companyName: typeof companyName === 'string' && companyName.trim() ? companyName.trim() : name.trim(),
+        sector: typeof sector === 'string' && sector.trim() ? sector.trim() : 'Information Technology',
       });
     }
 

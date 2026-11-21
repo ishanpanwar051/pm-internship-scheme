@@ -28,11 +28,12 @@ const protect = async (req, res, next) => {
   }
 
   try {
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET environment variable is missing.');
+    }
+
     // 3. Verify JWT signature & expiration
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || 'pm_internship_super_secret_jwt_key_2024_secure'
-    );
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // 4. Fetch user from database to ensure fresh state
     const user = await User.findById(decoded.id);

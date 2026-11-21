@@ -195,7 +195,7 @@ export const CompanyMatches: React.FC = () => {
           <Users className="w-8 h-8 text-slate-300 mx-auto" />
           <div className="text-sm font-bold text-slate-700">No candidates found in '{activeTab}' category.</div>
           <p className="text-slate-400 max-w-sm mx-auto">
-            Candidates matched by the Hungarian allocation algorithm will appear here for your review and approval.
+            Candidates matched based on skills, location, and role requirements will appear here for your review and approval.
           </p>
           <div className="pt-2">
             <Link
@@ -226,7 +226,7 @@ export const CompanyMatches: React.FC = () => {
                     <ScoreBadge score={score} variant="badge" />
                     <StatusBadge status={item.status} />
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 font-semibold">
-                      {item.quotaCategory || intern.category || 'General Quota'}
+                      Category: {item.matchReason?.quotaCategory || intern.category || 'General'}
                     </span>
                   </div>
 
@@ -335,7 +335,7 @@ export const CompanyMatches: React.FC = () => {
 
               <div>
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-                  Verified Technical Skills (Extracted via AI NLP)
+                  Verified Skills from Profile & Resume
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {(selectedIntern.skills || ['AutoCAD', 'SolidWorks', 'EV Powertrain', 'Thermodynamics']).map(
@@ -354,10 +354,10 @@ export const CompanyMatches: React.FC = () => {
               <div className="p-3 bg-emerald-50/60 rounded-xl border border-emerald-200 space-y-1 text-emerald-950">
                 <div className="font-bold flex items-center space-x-1.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>Aadhaar e-KYC & Affirmative Quota Verified</span>
+                  <span>Candidate Profile & Eligibility Verified</span>
                 </div>
                 <p className="text-[11px] text-emerald-800">
-                  Statutory eligibility and category credentials verified via DigiLocker. Pre-cleared for direct DBT stipend disbursement.
+                  Eligibility and credentials verified as per Government of India guidelines. Pre-cleared for placement and stipend disbursement.
                 </p>
               </div>
             </div>

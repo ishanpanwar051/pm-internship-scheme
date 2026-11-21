@@ -124,7 +124,7 @@ export const AdminDashboard: React.FC = () => {
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            PM Internship Scheme · Autonomous Hungarian Bipartite Matching & Quota Governance
+            PM Internship Scheme · National Internship Allocation & Monitoring
           </p>
         </div>
 
@@ -228,7 +228,7 @@ export const AdminDashboard: React.FC = () => {
           change="+2.1%"
           isPositive={true}
           icon={Sparkles}
-          subtitle="Hungarian affinity index"
+          subtitle="Average suitability score"
         />
       </div>
 
@@ -238,9 +238,9 @@ export const AdminDashboard: React.FC = () => {
         <div className="lg:col-span-2">
           <AIEngineStatus
             isOnline={true}
-            currentModel="TF-IDF + Cosine Similarity"
-            optimization="Hungarian Algorithm"
-            lastRun="2 minutes ago"
+            currentModel="Skills & Background Match"
+            optimization="Smart Matching"
+            lastRun="Recently"
             matchQuality={`${matchQualityScore}%`}
           />
         </div>
@@ -260,7 +260,7 @@ export const AdminDashboard: React.FC = () => {
             <ProgressBar
               label="Competency Skill Match"
               value={94}
-              subtitle="NLP feature vector similarity"
+              subtitle="Skills and background match"
               colorClass="bg-orange-500"
             />
             <ProgressBar
@@ -278,7 +278,7 @@ export const AdminDashboard: React.FC = () => {
           </div>
 
           <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-            <span>Affirmative Quotas</span>
+            <span>Reservation Norms</span>
             <span className="text-emerald-600 font-bold font-mono">100% Enforced</span>
           </div>
         </div>
@@ -367,7 +367,7 @@ export const AdminDashboard: React.FC = () => {
               Recent Candidate Placements
             </h2>
             <p className="text-[11px] text-slate-500 mt-0.5">
-              Optimal pairings computed by the Hungarian bipartite optimization solver
+              Candidate placements computed by the matching engine
             </p>
           </div>
           <Link

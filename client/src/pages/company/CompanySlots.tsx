@@ -251,7 +251,7 @@ export const CompanySlots: React.FC = () => {
             </h1>
           </div>
           <p className="text-xs text-saas-muted mt-1">
-            Published internship positions indexed for the autonomous Hungarian AI allocation engine
+            Manage and publish your internship positions for candidate matching
           </p>
         </div>
 
@@ -293,80 +293,25 @@ export const CompanySlots: React.FC = () => {
       {viewMode === 'cards' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {slots.length === 0 ? (
-            // Sample demonstration cards if database has 0 items
-            [
-              {
-                title: 'Backend Engineering Intern',
-                company: 'TechCorp Labs',
-                location: 'Bangalore',
-                seats: 12,
-                skills: ['Python', 'SQL', 'APIs', 'PostgreSQL'],
-                stipend: 25000,
-              },
-              {
-                title: 'Machine Learning Research Intern',
-                company: 'AI Synergy Corp',
-                location: 'Hyderabad',
-                seats: 8,
-                skills: ['PyTorch', 'TensorFlow', 'NLP', 'Vector Search'],
-                stipend: 30000,
-              },
-              {
-                title: 'Cloud Infrastructure Intern',
-                company: 'Global Cloud Systems',
-                location: 'Pune',
-                seats: 10,
-                skills: ['Docker', 'Kubernetes', 'AWS', 'Linux'],
-                stipend: 22000,
-              },
-            ].map((slot, idx) => (
-              <div
-                key={idx}
-                className="bg-saas-card border border-saas-border rounded-lg p-5 flex flex-col justify-between space-y-4 hover:border-zinc-700 transition-colors"
-              >
-                <div>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="text-sm font-semibold text-saas-primary">{slot.title}</h3>
-                      <p className="text-xs text-saas-muted mt-0.5">{slot.company}</p>
-                    </div>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-zinc-800 text-zinc-300 border border-saas-border">
-                      {slot.seats} positions
-                    </span>
-                  </div>
-
-                  <div className="flex items-center space-x-1 text-xs text-saas-dim mt-2">
-                    <MapPin className="w-3 h-3 text-zinc-500" />
-                    <span>{slot.location}</span>
-                    <span className="text-zinc-700">·</span>
-                    <span className="font-mono text-zinc-400">₹{slot.stipend.toLocaleString()}/mo</span>
-                  </div>
-
-                  {/* Skills tags */}
-                  <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-saas-border-subtle">
-                    {slot.skills.map((skill, sIdx) => (
-                      <span
-                        key={sIdx}
-                        className="px-2 py-0.5 rounded text-[10px] font-mono bg-saas-surface text-saas-primary border border-saas-border"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="pt-2 border-t border-saas-border flex items-center justify-between text-xs">
-                  <span className="text-[10px] text-emerald-400 font-mono">Engine Indexed</span>
-                  <button
-                    type="button"
-                    onClick={handleOpenCreate}
-                    className="text-xs font-medium text-brand-indigo-light hover:text-white"
-                  >
-                    Manage Slot
-                  </button>
-                </div>
+            <div className="col-span-full py-16 text-center bg-saas-card border border-dashed border-saas-border rounded-lg space-y-3">
+              <Briefcase className="w-8 h-8 text-saas-dim mx-auto" />
+              <div className="text-sm font-semibold text-saas-primary">
+                You haven't posted an internship opportunity yet
               </div>
-            ))
+              <p className="text-xs text-saas-muted max-w-sm mx-auto">
+                Create your first internship listing to start matching with qualified candidates based on your required skills and criteria.
+              </p>
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={handleOpenCreate}
+                  className="inline-flex items-center space-x-1.5 px-4 py-2 text-xs font-medium bg-brand-indigo hover:bg-brand-indigo-light text-white rounded-md transition-colors shadow-sm cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Create Your First Opportunity</span>
+                </button>
+              </div>
+            </div>
           ) : (
             slots.map((slot) => (
               <div
@@ -515,7 +460,7 @@ export const CompanySlots: React.FC = () => {
 
                 <div>
                   <label className="block text-xs font-medium text-saas-muted mb-1">
-                    Required Competency Skills (TF-IDF Vectorized)
+                    Required Skills for this Position
                   </label>
                   <TagInput
                     tags={formData.requiredSkills}

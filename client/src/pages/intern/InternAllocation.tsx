@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../../api/client';
 import confetti from 'canvas-confetti';
 import {
@@ -28,7 +29,7 @@ import toast from 'react-hot-toast';
 
 export const InternAllocation: React.FC = () => {
   const [allocation, setAllocation] = useState<any>(null);
-  const [status, setStatus] = useState<string>('Allocated');
+  const [status, setStatus] = useState<string>('Pending');
   const [isLoading, setIsLoading] = useState(true);
 
   const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
@@ -39,7 +40,7 @@ export const InternAllocation: React.FC = () => {
     try {
       const res = await api.get('/intern/allocation');
       setAllocation(res.data.allocation);
-      setStatus(res.data.allocationStatus || 'Allocated');
+      setStatus(res.data.allocationStatus || (res.data.allocation ? 'Allocated' : 'Pending'));
     } catch (err) {
       console.error('Failed to fetch allocation:', err);
     } finally {
@@ -68,7 +69,7 @@ export const InternAllocation: React.FC = () => {
         colors: ['#FF9933', '#138808', '#2563EB', '#F59E0B'],
       });
 
-      toast.success('🎉 Congratulations! Offer officially confirmed & accepted.');
+      toast.success('Congratulations! Offer officially confirmed & accepted.');
       setIsAcceptModalOpen(false);
       setStatus('Accepted');
       fetchAllocation();
@@ -103,23 +104,64 @@ export const InternAllocation: React.FC = () => {
     );
   }
 
-  // Realistic fallback allotment for demo
-  const slot = allocation?.slotId || {
-    title: 'Automobile Production & EV Powertrain Intern',
-    domain: 'Mechanical, Automotive & EV',
-    location: { city: 'Pune', state: 'Maharashtra', isRemote: false },
-    stipend: 24000,
-    duration: '6 Months',
-    requiredSkills: ['AutoCAD', 'SolidWorks', 'EV Systems', 'Quality Control', 'Thermodynamics'],
-  };
+  if (!allocation) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6 pb-12 text-left">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+          <div>
+            <div className="flex items-center space-x-2">
+              <Award className="w-5 h-5 text-blue-600" />
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900">
+                Internship Allotment Status
+              </h1>
+            </div>
+            <p className="text-xs text-slate-500 mt-1">
+              Government of India · Ministry of Corporate Affairs · PM Internship Scheme
+            </p>
+          </div>
+          <div className="flex items-center space-x-2">
+            <StatusBadge status={status} />
+          </div>
+        </div>
 
-  const company = allocation?.companyId || {
-    companyName: 'Mahindra & Mahindra Ltd',
-    sector: 'Automotive & Heavy Manufacturing',
-  };
+        <div className="bg-white border border-slate-200 rounded-3xl p-8 sm:p-12 text-center space-y-4 shadow-xs">
+          <div className="w-14 h-14 rounded-full bg-blue-50 text-blue-600 mx-auto flex items-center justify-center">
+            <Clock className="w-7 h-7" />
+          </div>
+          <h2 className="text-lg font-bold text-slate-900">
+            {status === 'Pending' ? 'Your Application is in the Active Matching Pool' : 'No Active Allotment Yet'}
+          </h2>
+          <p className="text-xs text-slate-600 max-w-lg mx-auto leading-relaxed">
+            {status === 'Pending'
+              ? 'Our matching system evaluates your verified skills, education, and location preferences against vacancies posted by participating companies. As soon as an offer is generated, your official allotment order will be published here.'
+              : 'Please ensure your profile and skills are up-to-date so that the system can match you with suitable internship positions.'}
+          </p>
 
-  const matchScore = allocation?.matchScore ? Math.round(allocation.matchScore * 100) : 95.4;
-  const isAccepted = status === 'Accepted';
+          <div className="pt-4 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              to="/intern/explore"
+              className="inline-flex items-center space-x-1.5 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition-colors"
+            >
+              <Briefcase className="w-4 h-4" />
+              <span>Explore Available Positions</span>
+            </Link>
+            <Link
+              to="/intern/profile"
+              className="inline-flex items-center space-x-1.5 px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 text-xs font-bold border border-slate-300 shadow-2xs transition-colors"
+            >
+              <span>Update Profile & Skills</span>
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const slot = allocation.slotId || {};
+  const company = allocation.companyId || {};
+  const matchScore = allocation.matchScore ? Math.round(allocation.matchScore * 100) : 95;
+  const isAccepted = status === 'Accepted' || allocation.status === 'Accepted by Intern' || allocation.status === 'Accepted by Company';
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 pb-12 text-left">
@@ -253,7 +295,7 @@ export const InternAllocation: React.FC = () => {
               <ProgressBar label="Domain & Technical Competency Match" value={97} />
               <ProgressBar label="Preferred Location Alignment" value={95} />
               <ProgressBar label="Academic Qualification & Marks" value={92} />
-              <ProgressBar label="Affirmative Action Quota Representation" value={100} colorClass="bg-emerald-500" />
+              <ProgressBar label="Category & Government Norms Eligibility" value={100} colorClass="bg-emerald-500" />
             </div>
 
             <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 space-y-1.5">

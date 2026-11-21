@@ -54,9 +54,22 @@ export const AdminAllocations: React.FC = () => {
     fetchAllocations();
   }, [statusFilter, categoryFilter]);
 
-  const handleDownloadCsv = () => {
-    window.open('/api/v1/admin/reports/csv', '_blank');
-    toast.success('Downloading Allocation Registry CSV export...');
+  const handleDownloadCsv = async () => {
+    try {
+      toast.loading('Preparing allocations report CSV...', { id: 'alloc-csv' });
+      const res = await api.get('/admin/reports/csv', { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'PM_Internship_Allocations_Report.csv');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      toast.success('Downloaded Allocation Registry CSV', { id: 'alloc-csv' });
+    } catch (err: any) {
+      toast.error('Failed to download allocations CSV', { id: 'alloc-csv' });
+    }
   };
 
   const handleSaveOverride = async (e: React.FormEvent) => {
@@ -128,15 +141,15 @@ export const AdminAllocations: React.FC = () => {
       ),
     },
     {
-      header: 'Affirmative Quota',
+      header: 'Category',
       cell: (item) => (
         <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 text-slate-800 border border-slate-200">
-          {item.quotaCategory || 'General'}
+          {item.matchReason?.quotaCategory || item.quotaCategory || 'General'}
         </span>
       ),
     },
     {
-      header: 'Hungarian Match',
+      header: 'Match %',
       accessorKey: 'matchScore',
       sortable: true,
       cell: (item) => (
@@ -191,7 +204,7 @@ export const AdminAllocations: React.FC = () => {
             </h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Official government repository of candidate-to-company placements assigned by the Hungarian Algorithm.
+            Official government repository of candidate-to-company internship allocations.
           </p>
         </div>
 

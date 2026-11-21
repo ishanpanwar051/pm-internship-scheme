@@ -46,38 +46,13 @@ export const CompanyDashboard: React.FC = () => {
     );
   }
 
-  const companyName = user?.name || data?.companyName || 'Tata Consultancy Services';
-  const openPositions = data?.activeSlots || 12;
-  const applications = data?.totalApplicants || 148;
-  const allocatedInterns = data?.filledSeats || 18;
-
-  // Diverse candidates across multiple streams
-  const recommendedCandidates = [
-    {
-      role: 'Automobile Assembly & EV Powertrain Intern',
-      stream: 'Mechanical & Automotive',
-      candidates: [
-        { name: 'Aarav Yadav', score: 96, skills: ['AutoCAD', 'SolidWorks', 'EV Powertrain', 'Thermodynamics'], degree: 'B.Tech Mechanical' },
-        { name: 'Pooja Verma', score: 92, skills: ['CATIA', 'Quality Control', 'Six Sigma', 'Manufacturing'], degree: 'Diploma Auto' },
-      ],
-    },
-    {
-      role: 'Financial Risk & Investment Modeling Intern',
-      stream: 'Commerce & Banking',
-      candidates: [
-        { name: 'Priya Sharma', score: 95, skills: ['Financial Modeling', 'Excel', 'Tally Prime', 'Accountancy'], degree: 'B.Com Honors' },
-        { name: 'Kunal Deshmukh', score: 91, skills: ['Auditing', 'GST Compliance', 'Taxation', 'Corporate Finance'], degree: 'BBA Finance' },
-      ],
-    },
-    {
-      role: 'AI & Data Engineering Intern',
-      stream: 'Computer Science & AI',
-      candidates: [
-        { name: 'Rahul Sen', score: 94, skills: ['Python', 'SQL', 'FastAPI', 'PyTorch', 'Data Pipelines'], degree: 'B.Tech CS' },
-        { name: 'Sneha Rao', score: 90, skills: ['React', 'TypeScript', 'Node.js', 'PostgreSQL'], degree: 'BCA' },
-      ],
-    },
-  ];
+  const companyName = user?.name || 'Partner Organization';
+  const totalSlots = data?.totalSlots || 0;
+  const totalSeats = data?.totalSeats || 0;
+  const filledSeats = data?.filledSeats || 0;
+  const pendingMatches = data?.pendingMatches || 0;
+  const recentAllocations = data?.recentAllocations || [];
+  const slotsSummary = data?.slotsSummary || [];
 
   return (
     <div className="space-y-6 pb-12 text-left">
@@ -109,43 +84,41 @@ export const CompanyDashboard: React.FC = () => {
       {/* 2. Primary Metrics Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
         <StatCard
-          label="Open Positions"
-          value={openPositions}
+          label="Posted Internships"
+          value={totalSlots}
           icon={Briefcase}
-          subtitle="Active recruitment vacancies"
+          subtitle="Active vacancy listings"
         />
         <StatCard
-          label="Applications Received"
-          value={applications}
-          change="+18%"
-          isPositive={true}
+          label="Total Seats"
+          value={totalSeats}
           icon={Users}
-          subtitle="Candidate submissions"
+          subtitle="Capacity across all slots"
         />
         <StatCard
-          label="High-Affinity AI Matches"
-          value="42"
+          label="Shortlisted Candidates"
+          value={pendingMatches}
           icon={Sparkles}
-          subtitle="Top Hungarian score matches"
+          subtitle="Awaiting your review"
         />
         <StatCard
-          label="Confirmed Interns"
-          value={allocatedInterns}
+          label="Confirmed Placements"
+          value={filledSeats}
           icon={CheckCircle2}
-          subtitle="Joined & accepted placements"
+          subtitle="Accepted candidates"
         />
       </div>
 
-      {/* 3. CSR & Affirmative Quota Compliance Banner */}
+      {/* 3. CSR & Representation Banner */}
       <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
         <div className="flex items-center space-x-2.5">
           <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
           <div>
             <span className="font-bold text-emerald-950">
-              MCA Section 135 CSR & Affirmative Action Representation:
+              MCA Section 135 CSR & Youth Skilling Initiative:
             </span>
             <span className="text-emerald-800 ml-1">
-              Your host entity satisfies 100% reservation parity (SC: 15%, ST: 7.5%, OBC: 27%, EWS: 10%, PwD: 4%).
+              Hosting candidates under the PM Internship Scheme contributes to your corporate skilling commitments with full Government guidelines compliance.
             </span>
           </div>
         </div>
@@ -154,80 +127,107 @@ export const CompanyDashboard: React.FC = () => {
         </span>
       </div>
 
-      {/* 4. AI-Ranked Candidate Talent Pipeline (Multi-Discipline) */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-xs">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-          <div className="flex items-center space-x-2">
-            <Sparkles className="w-4 h-4 text-emerald-600" />
-            <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-              AI-Matched Candidate Shortlists by Sector
-            </h2>
+      {/* 4. Candidate Talent Pipeline */}
+      {totalSlots === 0 ? (
+        <div className="bg-white border border-slate-200 rounded-2xl p-8 sm:p-12 text-center space-y-4 shadow-xs">
+          <div className="w-14 h-14 rounded-full bg-emerald-50 text-emerald-600 mx-auto flex items-center justify-center">
+            <Briefcase className="w-7 h-7" />
           </div>
-          <span className="text-[11px] text-slate-400 font-mono">
-            Hungarian Optimal Match Engine
-          </span>
+          <h2 className="text-base font-bold text-slate-900">
+            You haven't posted an internship yet — create your first one
+          </h2>
+          <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+            Publish your available internship positions and our matching engine will pair you with qualified candidates based on skills, education, and location.
+          </p>
+          <div className="pt-2">
+            <Link
+              to="/company/slots"
+              className="inline-flex items-center space-x-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Create Internship Opportunity</span>
+            </Link>
+          </div>
         </div>
-
-        <div className="space-y-6">
-          {recommendedCandidates.map((group, gIdx) => (
-            <div key={gIdx} className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="text-xs font-bold text-slate-900 flex items-center space-x-2">
-                  <span className="px-2 py-0.5 rounded text-[10px] bg-slate-100 text-slate-700 border border-slate-200">
-                    {group.stream}
-                  </span>
-                  <span>{group.role}</span>
-                </div>
-                <span className="text-[11px] text-emerald-700 font-semibold">
-                  {group.candidates.length} AI matches ready
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {group.candidates.map((cand, cIdx) => (
-                  <div
-                    key={cIdx}
-                    className="p-4 bg-slate-50/70 hover:bg-slate-50 rounded-xl border border-slate-200 hover:border-slate-300 transition-all flex flex-col justify-between"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <div>
-                          <div className="text-xs font-bold text-slate-900">{cand.name}</div>
-                          <div className="text-[11px] text-slate-500 font-medium">{cand.degree}</div>
-                        </div>
-                        <ScoreBadge score={cand.score} variant="badge" />
-                      </div>
-
-                      <div className="flex flex-wrap gap-1 mt-2.5">
-                        {cand.skills.map((s, sIdx) => (
-                          <span
-                            key={sIdx}
-                            className="px-2 py-0.5 rounded text-[10px] font-mono bg-white text-slate-700 border border-slate-200 font-medium"
-                          >
-                            {s}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="mt-3.5 pt-2.5 border-t border-slate-200/80 flex items-center justify-between">
-                      <span className="text-[10px] text-emerald-700 font-bold">
-                        ✓ Quota & KYC Validated
-                      </span>
-                      <Link
-                        to="/company/accepted-interns"
-                        className="text-xs text-emerald-700 hover:text-emerald-800 font-bold hover:underline"
-                      >
-                        Review Candidate Dossier →
-                      </Link>
-                    </div>
-                  </div>
-                ))}
-              </div>
+      ) : recentAllocations.length === 0 ? (
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 space-y-4 shadow-xs">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="flex items-center space-x-2">
+              <Sparkles className="w-4 h-4 text-emerald-600" />
+              <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                Matched Candidates
+              </h2>
             </div>
-          ))}
+            <span className="text-[11px] text-slate-400">
+              {totalSlots} Active {totalSlots === 1 ? 'Slot' : 'Slots'}
+            </span>
+          </div>
+          <div className="py-8 text-center space-y-2">
+            <Users className="w-8 h-8 text-slate-300 mx-auto" />
+            <div className="text-xs font-bold text-slate-700">No candidates matched yet</div>
+            <p className="text-[11px] text-slate-400 max-w-sm mx-auto">
+              Candidates matched to your {totalSlots} active listings will appear here once the matching run is completed.
+            </p>
+            <div className="pt-2">
+              <Link
+                to="/company/matches"
+                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-xs border border-emerald-200 transition-colors"
+              >
+                <span>View Matches Roster</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-xs">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="flex items-center space-x-2">
+              <Sparkles className="w-4 h-4 text-emerald-600" />
+              <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                Recent Candidate Matches
+              </h2>
+            </div>
+            <Link
+              to="/company/matches"
+              className="text-xs text-emerald-700 hover:text-emerald-800 font-bold hover:underline"
+            >
+              View All Matches →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {recentAllocations.map((alloc: any) => (
+              <div
+                key={alloc._id}
+                className="p-4 bg-slate-50/70 hover:bg-slate-50 rounded-xl border border-slate-200 hover:border-slate-300 transition-all flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div className="text-xs font-bold text-slate-900 truncate">
+                      {alloc.internId?.userId?.name || 'Candidate'}
+                    </div>
+                    <ScoreBadge score={alloc.matchScore || 0.9} variant="badge" />
+                  </div>
+                  <div className="text-[11px] text-slate-500 font-medium truncate">
+                    {alloc.slotId?.title || 'Internship Slot'}
+                  </div>
+                </div>
+
+                <div className="mt-3.5 pt-2.5 border-t border-slate-200/80 flex items-center justify-between text-[11px]">
+                  <span className="font-semibold text-slate-600">{alloc.status}</span>
+                  <Link
+                    to="/company/matches"
+                    className="text-emerald-700 hover:text-emerald-800 font-bold hover:underline"
+                  >
+                    Review →
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* 5. Quick Operational Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -240,7 +240,7 @@ export const CompanyDashboard: React.FC = () => {
               Manage Internship Capacity Slots
             </div>
             <div className="text-[11px] text-slate-500 leading-snug">
-              Add new department requirements, edit stipends, and manage slot seat quotas
+              Add new department requirements, edit stipends, and manage available seats
             </div>
           </div>
           <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-600 transition-colors shrink-0 ml-3" />

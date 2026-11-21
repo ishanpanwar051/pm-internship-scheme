@@ -115,10 +115,10 @@ export const MatchDetailModal: React.FC<MatchDetailModalProps> = ({
           <div className="flex items-center justify-between p-4 bg-orange-50 border border-orange-200 rounded-xl">
             <div>
               <div className="text-xs font-bold text-orange-800 tracking-wide uppercase">
-                Hungarian Cosine Compatibility
+                Overall Match Fit
               </div>
               <div className="text-[11px] text-orange-600 mt-0.5">
-                Computed across TF-IDF competency & quota matrices
+                Based on candidate skills, education, and Government guidelines
               </div>
             </div>
             <div className="text-3xl font-black font-mono text-orange-700">
@@ -129,21 +129,21 @@ export const MatchDetailModal: React.FC<MatchDetailModalProps> = ({
           {/* Detailed Breakdown */}
           <div className="space-y-3">
             <div className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-              Compatibility Vectors
+              Match Breakdown
             </div>
             <div className="space-y-2.5">
-              <ProgressBar label="Technical Skills Vector" value={breakdown.technicalSkills || 95} colorClass="bg-orange-500" />
+              <ProgressBar label="Skills & Experience Fit" value={breakdown.technicalSkills || 95} colorClass="bg-orange-500" />
               <ProgressBar label="Academic Alignment" value={breakdown.experience || 90} colorClass="bg-blue-600" />
               <ProgressBar label="Geographic Proximity" value={breakdown.location || 94} colorClass="bg-indigo-600" />
               <ProgressBar label="Candidate Preference" value={breakdown.preferences || 96} colorClass="bg-purple-600" />
-              <ProgressBar label="Statutory Reservation Quota" value={breakdown.eligibility || 100} colorClass="bg-emerald-600" />
+              <ProgressBar label="Category & Norms Eligibility" value={breakdown.eligibility || 100} colorClass="bg-emerald-600" />
             </div>
           </div>
 
           {/* Why this match */}
           <div className="space-y-2 pt-3 border-t border-slate-200">
             <div className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-              System Rationales
+              Key Highlights
             </div>
             <div className="space-y-2 text-xs text-slate-600">
               {reasons.map((reason, idx) => (

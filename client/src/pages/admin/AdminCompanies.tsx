@@ -78,15 +78,15 @@ export const AdminCompanies: React.FC = () => {
       sortable: true,
       cell: (c) => (
         <span className="text-xs font-mono font-medium text-saas-primary">
-          {c.totalSlots || Math.floor(Math.random() * 20) + 5}
+          {c.totalSlots ?? 0}
         </span>
       ),
     },
     {
-      header: 'Applications',
+      header: 'Filled Seats',
       cell: (c) => (
         <span className="text-xs font-mono text-saas-dim">
-          {Math.floor(Math.random() * 80) + 15}
+          {c.filledSeats ?? 0}
         </span>
       ),
     },

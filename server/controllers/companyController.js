@@ -7,7 +7,25 @@ const Allocation = require('../models/Allocation');
 const InternProfile = require('../models/InternProfile');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
+const { recalculateFilledSeats } = require('./adminController');
 const { sendAcceptanceConfirmedEmail, sendRejectionEmail } = require('../services/emailService');
+
+const ALLOWED_SLOT_FIELDS = [
+  'title',
+  'description',
+  'domain',
+  'requiredSkills',
+  'preferredSkills',
+  'totalSeats',
+  'stipend',
+  'duration',
+  'mode',
+  'location',
+  'eligibility',
+  'startDate',
+  'endDate',
+  'applicationDeadline',
+];
 
 // @route   GET /api/v1/company/profile
 exports.getProfile = async (req, res) => {
@@ -16,8 +34,8 @@ exports.getProfile = async (req, res) => {
     if (!profile) {
       profile = await CompanyProfile.create({
         userId: req.user.id,
-        companyName: req.user.name || 'Organization',
-        sector: 'General',
+        companyName: req.user.name || 'Enterprise Partner',
+        sector: 'Information Technology',
       });
     }
     res.status(200).json({ success: true, profile });
@@ -75,10 +93,13 @@ exports.createSlot = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Company profile not found' });
     }
 
-    const slotData = {
-      ...req.body,
-      companyId: profile._id,
-    };
+    const slotData = {};
+    ALLOWED_SLOT_FIELDS.forEach((f) => {
+      if (req.body[f] !== undefined) slotData[f] = req.body[f];
+    });
+    slotData.companyId = profile._id;
+    slotData.filledSeats = 0;
+    slotData.isActive = true;
 
     const slot = await InternshipSlot.create(slotData);
 
@@ -132,9 +153,18 @@ exports.getSlotById = async (req, res) => {
 exports.updateSlot = async (req, res) => {
   try {
     const profile = await CompanyProfile.findOne({ userId: req.user.id });
+    if (!profile) {
+      return res.status(404).json({ success: false, message: 'Company profile not found' });
+    }
+
+    const slotData = {};
+    ALLOWED_SLOT_FIELDS.forEach((f) => {
+      if (req.body[f] !== undefined) slotData[f] = req.body[f];
+    });
+
     const slot = await InternshipSlot.findOneAndUpdate(
       { _id: req.params.id, companyId: profile._id },
-      req.body,
+      { $set: slotData },
       { new: true, runValidators: true }
     );
 
@@ -245,14 +275,24 @@ exports.acceptIntern = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Allocation match not found' });
     }
 
+    if (allocation.status === 'Accepted by Company' || allocation.status === 'Accepted by Intern' || allocation.status === 'Completed') {
+      return res.status(400).json({ success: false, message: 'Allocation has already been accepted' });
+    }
+    if (allocation.status === 'Rejected by Company' || allocation.status === 'Declined by Intern') {
+      return res.status(400).json({ success: false, message: `Cannot accept an allocation that was already ${allocation.status.toLowerCase()}` });
+    }
+
     allocation.status = 'Accepted by Company';
     allocation.acceptedAt = Date.now();
     await allocation.save();
 
-    // Increment filled seats
-    await InternshipSlot.findByIdAndUpdate(allocation.slotId._id, {
-      $inc: { filledSeats: 1 },
+    // Sync InternProfile allocationStatus
+    await InternProfile.findByIdAndUpdate(allocation.internId._id, {
+      allocationStatus: 'Accepted',
     });
+
+    // Recalculate filled seats accurately
+    await recalculateFilledSeats();
 
     // Notify intern
     const internUser = await User.findById(allocation.internId.userId);
@@ -301,6 +341,13 @@ exports.rejectIntern = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Allocation match not found' });
     }
 
+    if (allocation.status === 'Accepted by Company' || allocation.status === 'Accepted by Intern' || allocation.status === 'Completed') {
+      return res.status(400).json({ success: false, message: 'Cannot reject an allocation that has already been accepted' });
+    }
+    if (allocation.status === 'Rejected by Company') {
+      return res.status(400).json({ success: false, message: 'Allocation is already rejected' });
+    }
+
     allocation.status = 'Rejected by Company';
     allocation.companyFeedback = reason;
     await allocation.save();
@@ -309,6 +356,9 @@ exports.rejectIntern = async (req, res) => {
     await InternProfile.findByIdAndUpdate(allocation.internId._id, {
       allocationStatus: 'Pending',
     });
+
+    // Recalculate filled seats accurately
+    await recalculateFilledSeats();
 
     const internUser = await User.findById(allocation.internId.userId);
     if (internUser) {

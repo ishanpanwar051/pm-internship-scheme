@@ -1,4 +1,5 @@
 const express = require('express');
+const { body } = require('express-validator');
 const {
   getProfile,
   updateProfile,
@@ -15,6 +16,7 @@ const {
 } = require('../controllers/internController');
 const { protect } = require('../middleware/auth');
 const { authorize } = require('../middleware/roles');
+const { validate } = require('../middleware/validate');
 const upload = require('../middleware/upload');
 
 const router = express.Router();
@@ -24,7 +26,15 @@ router.use(protect);
 router.use(authorize('intern'));
 
 router.get('/profile', getProfile);
-router.post('/profile', updateProfile);
+router.post(
+  '/profile',
+  [
+    body('skills').optional().isArray().withMessage('Skills must be an array of strings'),
+    body('aadhar').optional().isString().isLength({ min: 12, max: 12 }).withMessage('Aadhaar must be 12 digits'),
+    validate,
+  ],
+  updateProfile
+);
 router.post('/resume/upload', upload.single('file'), uploadResume);
 
 router.get('/allocation', getAllocation);

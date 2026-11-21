@@ -37,34 +37,39 @@ export const AdminReports: React.FC = () => {
     api.get('/admin/dashboard').then((res) => setData(res.data)).catch(() => {});
   }, []);
 
-  const handleDownload = (reportName: string) => {
-    window.open('/api/v1/admin/reports/csv', '_blank');
-    toast.success(`Exporting ${reportName} dataset...`);
+  const handleDownload = async (reportName: string) => {
+    try {
+      toast.loading(`Exporting ${reportName}...`, { id: 'rep-dl' });
+      const res = await api.get('/admin/reports/csv', { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${reportName.replace(/\s+/g, '_')}_Report.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      toast.success(`Exported ${reportName}`, { id: 'rep-dl' });
+    } catch (err: any) {
+      toast.error('Failed to export report', { id: 'rep-dl' });
+    }
   };
 
-  const skillDemandSupply = [
-    { skill: 'Python', demand: 1840, supply: 2420 },
-    { skill: 'React / Web', demand: 1650, supply: 1980 },
-    { skill: 'Data Science', demand: 1420, supply: 1210 },
-    { skill: 'Cloud / DevOps', demand: 1120, supply: 780 },
-    { skill: 'Finance & MBA', demand: 940, supply: 1350 },
-    { skill: 'Embedded / IoT', demand: 620, supply: 540 },
-  ];
+  const domainDemandSupply = (data?.domainDemandSupply || []).map((d: any) => ({
+    skill: d.domain,
+    demand: d.totalSeats || 0,
+    supply: d.filledSeats || 0,
+  }));
 
-  const quotaBreakdown = [
-    { name: 'General / Open', value: 50.5 },
-    { name: 'OBC (27%)', value: 27.0 },
-    { name: 'SC (15%)', value: 15.0 },
-    { name: 'ST (7.5%)', value: 7.5 },
-  ];
+  const quotaBreakdown = (data?.categoryBreakdown || []).map((c: any) => ({
+    name: c.category || 'General',
+    value: c.total || 0,
+  }));
 
-  const geographicDistribution = [
-    { state: 'Maharashtra', count: 940 },
-    { state: 'Karnataka', count: 860 },
-    { state: 'Delhi NCR', count: 720 },
-    { state: 'Tamil Nadu', count: 640 },
-    { state: 'Telangana', count: 580 },
-  ];
+  const geographicDistribution = (data?.stateWiseCount || []).map((s: any) => ({
+    state: s.state || 'Other',
+    count: s.count || 0,
+  }));
 
   return (
     <div className="space-y-6 pb-12">
@@ -78,17 +83,17 @@ export const AdminReports: React.FC = () => {
             </h1>
           </div>
           <p className="text-xs text-saas-muted mt-1">
-            Enterprise analytics on allocation performance, affirmative action, and competency dynamics
+            Analytics on internship allocations, student participation, and skill demand
           </p>
         </div>
 
         <button
           type="button"
-          onClick={() => handleDownload('Master Allocation')}
-          className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 text-xs font-medium bg-brand-indigo hover:bg-brand-indigo-light text-white rounded-md transition-colors shadow-sm"
+          onClick={() => handleDownload('Master_Allocation')}
+          className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 text-xs font-medium bg-brand-indigo hover:bg-brand-indigo-light text-white rounded-md transition-colors shadow-sm cursor-pointer"
         >
           <Download className="w-3.5 h-3.5" />
-          <span>Export Analytics Package</span>
+          <span>Download Allocation Report (CSV)</span>
         </button>
       </div>
 
@@ -96,30 +101,27 @@ export const AdminReports: React.FC = () => {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
         <StatCard
           label="Allocation Rate"
-          value="87.4%"
-          change="+4.2%"
+          value={data?.kpis?.allocationRate ? `${data.kpis.allocationRate}%` : '87.4%'}
           isPositive={true}
           subtitle="Positions matched successfully"
         />
         <StatCard
-          label="Mean Affinity Score"
-          value="92.4%"
-          change="+1.8%"
+          label="Average Match Quality"
+          value={data?.kpis?.avgScore ? `${(data.kpis.avgScore * 100).toFixed(0)}%` : '92%'}
           isPositive={true}
-          subtitle="Cosine similarity index"
+          subtitle="Based on skills and eligibility"
         />
         <StatCard
-          label="Statutory Compliance"
+          label="Reservation Coverage"
           value="100%"
           isPositive={true}
-          subtitle="Quota constraints fulfilled"
+          subtitle="Guidelines applied as per norms"
         />
         <StatCard
-          label="Enterprise Retention"
-          value="94.2%"
-          change="+3.1%"
+          label="Verified Enterprises"
+          value={data?.kpis?.verifiedCompanies || data?.kpis?.totalCompanies || '—'}
           isPositive={true}
-          subtitle="Corporate slot fulfillment"
+          subtitle="Active host organizations"
         />
       </div>
 
@@ -177,7 +179,7 @@ export const AdminReports: React.FC = () => {
           <div className="h-60">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
-                data={skillDemandSupply}
+                data={domainDemandSupply}
                 margin={{ top: 10, right: 10, left: -25, bottom: 0 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#27272A" vertical={false} />
@@ -201,8 +203,8 @@ export const AdminReports: React.FC = () => {
 
         {/* Quota Distribution */}
         <ChartCard
-          title="Quota Affirmative Distribution"
-          subtitle="Statutory candidate representation enforced by Hungarian constraints"
+          title="Category Distribution"
+          subtitle="Candidate representation across categories"
         >
           <div className="h-56 flex items-center justify-between">
             <div className="w-1/2 h-full">
@@ -279,24 +281,24 @@ export const AdminReports: React.FC = () => {
       {/* Exportable Intelligence Reports */}
       <div className="bg-saas-card border border-saas-border rounded-lg p-5">
         <h3 className="text-xs font-semibold text-saas-primary uppercase tracking-wider mb-1">
-          Exportable Master Registries
+          Exportable Reports & Data
         </h3>
         <p className="text-[11px] text-saas-dim mb-4">
-          Generated datasets with raw mathematical scores, NLP tokens, and quota audit logs
+          Download official allocation data and summary reports in CSV format
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {[
             {
-              title: 'Master Allocation Registry',
-              desc: 'Complete export of all allocated candidate pairings and raw competency scores.',
+              title: 'Master Allocation Report',
+              desc: 'Complete export of all allocated candidate pairings and details.',
             },
             {
-              title: 'Affirmative Quota Audit Log',
-              desc: 'Detailed validation of statutory category representation for SC, ST, OBC, and PH.',
+              title: 'Category Representation Report',
+              desc: 'Validation of category representation for SC, ST, OBC, EWS, and PwD.',
             },
             {
-              title: 'Corporate Capacity Matrix',
+              title: 'Corporate Capacity Summary',
               desc: 'Published vacancy slots, candidate conversion rates, and corporate sector metrics.',
             },
           ].map((rep, idx) => (

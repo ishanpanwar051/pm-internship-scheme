@@ -15,22 +15,25 @@ const storage = multer.diskStorage({
     cb(null, uploadDirectory);
   },
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
+    const ext = path.extname(file.originalname).toLowerCase();
     const basename = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9]/g, '_');
     const uniqueSuffix = `${Date.now()}_${Math.round(Math.random() * 1e6)}`;
     cb(null, `${basename}_${uniqueSuffix}${ext}`);
   },
 });
 
-// File filter supporting PDF documents and image files
+// File filter strictly supporting PDF documents and safe image files (NO SVG to prevent stored XSS)
 const fileFilter = (req, file, cb) => {
   const allowedDocMimes = ['application/pdf'];
-  const allowedImageMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'];
+  const allowedImageMimes = ['image/jpeg', 'image/png', 'image/webp'];
+  const ext = path.extname(file.originalname).toLowerCase();
 
-  if (
-    allowedDocMimes.includes(file.mimetype) ||
-    allowedImageMimes.includes(file.mimetype)
-  ) {
+  const isPdf = allowedDocMimes.includes(file.mimetype) && ext === '.pdf';
+  const isImage =
+    allowedImageMimes.includes(file.mimetype) &&
+    ['.jpg', '.jpeg', '.png', '.webp'].includes(ext);
+
+  if (isPdf || isImage) {
     cb(null, true);
   } else {
     cb(

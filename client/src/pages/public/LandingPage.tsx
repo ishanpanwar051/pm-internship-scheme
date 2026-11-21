@@ -375,10 +375,10 @@ export const LandingPage: React.FC = () => {
               <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-1.5">
                 <div className="flex items-center space-x-2 text-emerald-600 font-bold text-sm">
                   <Check className="w-4 h-4 stroke-[3]" />
-                  <span>Affirmative Quotas</span>
+                  <span>Reservation Categories</span>
                 </div>
                 <p className="text-xs text-slate-600">
-                  Statutory reservations fully protected for SC, ST, OBC, EWS, and PwD applicants under national norms.
+                  Reservation guidelines protected for SC, ST, OBC, EWS, and PwD applicants as per Government of India norms.
                 </p>
               </div>
             </div>
@@ -554,7 +554,7 @@ export const LandingPage: React.FC = () => {
             </div>
             <h4 className="text-base font-bold text-slate-900">Enterprise Host Partner</h4>
             <p className="text-sm text-slate-600 mt-1.5 leading-relaxed">
-              Publish vacancies, access quota-verified candidate rosters, and onboard youth seamlessly.
+              Publish vacancies, view shortlisted candidates, and onboard youth seamlessly.
             </p>
             <span className="inline-flex items-center text-xs font-bold text-blue-600 mt-4 group-hover:translate-x-1 transition-transform">
               <span>Corporate Sign In</span>
@@ -571,7 +571,7 @@ export const LandingPage: React.FC = () => {
             </div>
             <h4 className="text-base font-bold text-slate-900">Ministry & Administrative Portal</h4>
             <p className="text-sm text-slate-600 mt-1.5 leading-relaxed">
-              Monitor quota compliance, run bipartite allocation engines, and export statutory reports.
+              Monitor allocations, run smart matching, and export reports.
             </p>
             <span className="inline-flex items-center text-xs font-bold text-purple-600 mt-4 group-hover:translate-x-1 transition-transform">
               <span>Admin Console</span>

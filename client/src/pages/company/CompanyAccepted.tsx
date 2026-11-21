@@ -32,9 +32,22 @@ export const CompanyAccepted: React.FC = () => {
     fetchAccepted();
   }, []);
 
-  const handleDownloadCsv = () => {
-    window.open('/api/v1/company/report/download', '_blank');
-    toast.success('Downloading candidate roster CSV...');
+  const handleDownloadCsv = async () => {
+    try {
+      toast.loading('Preparing candidate roster CSV...', { id: 'csv-dl' });
+      const res = await api.get('/company/report/download', { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Accepted_Interns_Report.csv');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      toast.success('Downloaded candidate roster CSV', { id: 'csv-dl' });
+    } catch (err: any) {
+      toast.error('Failed to download report', { id: 'csv-dl' });
+    }
   };
 
   const handleOpenFeedback = (item: any) => {

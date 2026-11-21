@@ -19,21 +19,21 @@ export const Footer: React.FC = () => {
               </div>
               <span className="font-bold text-slate-900">PM INTERNSHIP SCHEME</span>
               <span className="text-slate-300">·</span>
-              <span className="text-orange-600 font-semibold font-mono text-[11px]">AI Smart Engine</span>
+              <span className="text-orange-600 font-semibold text-[11px]">Smart Matching Portal</span>
             </div>
             <p className="text-[11px] text-slate-500 max-w-lg leading-relaxed">
-              Empowering India's youth through autonomous AI competency matching, Hungarian algorithm optimization, and constitutional affirmative quota governance.
+              Empowering India's youth through transparent, skill-based internship matching with fair representation as per Government of India guidelines.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-5 text-[11px] text-slate-500">
             <div className="flex items-center space-x-1 text-slate-700 font-medium">
               <Cpu className="w-3.5 h-3.5 text-orange-600" />
-              <span>TF-IDF + Hungarian Engine</span>
+              <span>Smart Matching</span>
             </div>
             <div className="flex items-center space-x-1 text-emerald-700 font-medium">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span>100% Quota Compliance</span>
+              <span>Government Guidelines Compliant</span>
             </div>
             <span className="text-slate-400">© {new Date().getFullYear()} Government of India Initiative</span>
           </div>

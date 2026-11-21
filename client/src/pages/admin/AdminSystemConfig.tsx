@@ -15,14 +15,14 @@ const WEIGHT_LABELS: Record<string, string> = {
   cgpaHigh: 'Academic Merit — CGPA ≥ 8.5',
   cgpaMid: 'Academic Merit — CGPA ≥ 7.5',
   cgpaLow: 'Academic Merit — CGPA ≥ 6.5',
-  penaltyGate: 'CGPA Eligibility Gate Penalty (invalid score)',
+  penaltyGate: 'Minimum Eligibility Threshold Adjustment',
 };
 
 const QUOTA_LABELS: Record<string, string> = {
-  SC: 'SC',
-  ST: 'ST',
-  OBC: 'OBC',
-  PH: 'PH',
+  SC: 'SC (Scheduled Caste)',
+  ST: 'ST (Scheduled Tribe)',
+  OBC: 'OBC (Other Backward Class)',
+  PH: 'PwD / PH (Persons with Disabilities)',
 };
 
 export const AdminSystemConfig: React.FC = () => {
@@ -210,8 +210,8 @@ export const AdminSystemConfig: React.FC = () => {
               ))}
             </div>
             <div className="px-4 py-3 border-t border-saas-border-subtle text-[11px] text-saas-dim leading-relaxed">
-              General category receives the remaining seats after reserved proportions. Scores are
-              always real AI-computed cosine similarities plus configured bonuses — never random.
+              General category receives the remaining seats after reserved proportions. Placements are
+              computed based on actual profile skills, location, and configured bonuses.
             </div>
           </div>
         </div>

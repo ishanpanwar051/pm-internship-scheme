@@ -5,6 +5,7 @@ const InternshipSlot = require('../models/InternshipSlot');
 const Allocation = require('../models/Allocation');
 const Notification = require('../models/Notification');
 const { parseResume } = require('../services/aiService');
+const { recalculateFilledSeats } = require('./adminController');
 
 // @route   GET /api/v1/intern/profile
 exports.getProfile = async (req, res) => {
@@ -158,12 +159,25 @@ exports.acceptAllocation = async (req, res) => {
       return res.status(404).json({ success: false, message: 'No allocation found to accept' });
     }
 
+    if (allocation.status === 'Accepted by Intern' || allocation.status === 'Completed') {
+      return res.status(400).json({ success: false, message: 'Allocation is already accepted' });
+    }
+    if (allocation.status === 'Declined by Intern' || allocation.status === 'Rejected by Company') {
+      return res.status(400).json({
+        success: false,
+        message: `Cannot accept an allocation that was already ${allocation.status.toLowerCase()}`,
+      });
+    }
+
     allocation.status = 'Accepted by Intern';
     allocation.acceptedAt = Date.now();
     await allocation.save();
 
     profile.allocationStatus = 'Accepted';
     await profile.save();
+
+    // Recalculate filled seats
+    await recalculateFilledSeats();
 
     // Notify student
     await Notification.create({
@@ -194,11 +208,24 @@ exports.declineAllocation = async (req, res) => {
       return res.status(404).json({ success: false, message: 'No allocation found' });
     }
 
+    if (allocation.status === 'Accepted by Intern' || allocation.status === 'Accepted by Company' || allocation.status === 'Completed') {
+      return res.status(400).json({
+        success: false,
+        message: 'Cannot decline an allocation that has already been confirmed/accepted',
+      });
+    }
+    if (allocation.status === 'Declined by Intern') {
+      return res.status(400).json({ success: false, message: 'Allocation is already declined' });
+    }
+
     allocation.status = 'Declined by Intern';
     await allocation.save();
 
     profile.allocationStatus = 'Pending';
     await profile.save();
+
+    // Recalculate filled seats
+    await recalculateFilledSeats();
 
     res.status(200).json({
       success: true,
@@ -218,9 +245,10 @@ exports.getSlots = async (req, res) => {
     const query = { isActive: true };
 
     if (search) {
+      const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { requiredSkills: { $in: [new RegExp(search, 'i')] } },
+        { title: { $regex: safeSearch, $options: 'i' } },
+        { requiredSkills: { $in: [new RegExp(safeSearch, 'i')] } },
       ];
     }
     if (domain) query.domain = domain;

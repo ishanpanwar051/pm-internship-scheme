@@ -16,6 +16,8 @@ import {
   PhoneCall,
   AlertTriangle,
   X,
+  GraduationCap,
+  ShieldCheck,
 } from 'lucide-react';
 import NotificationDropdown from '../ui/NotificationDropdown';
 
@@ -267,7 +269,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileMenu }) => {
                     className="px-3.5 py-1.5 rounded-full text-orange-800 bg-orange-50 hover:bg-orange-100 border border-orange-200 transition-colors font-bold inline-flex items-center space-x-1"
                   >
                     <Cpu className="w-3 h-3 text-orange-600" />
-                    <span>Run AI Allocation Engine</span>
+                    <span>Matching Engine</span>
                   </Link>
                   <Link
                     to="/admin/allocations"
@@ -291,22 +293,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileMenu }) => {
                 to="/login?role=intern"
                 className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-full hover:bg-slate-100 hover:text-slate-900 transition-colors"
               >
-                <span>Student Skilling</span>
+                <span>Candidate Portal</span>
               </Link>
 
               <Link
                 to="/login?role=company"
                 className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-full hover:bg-slate-100 hover:text-slate-900 transition-colors"
               >
-                <span>Corporate Hosts</span>
+                <span>Partner Companies</span>
               </Link>
 
               <Link
-                to="/admin/run-engine"
+                to="/login?role=admin"
                 className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-orange-800 bg-orange-50 hover:bg-orange-100 border border-orange-200 transition-colors font-bold"
               >
                 <Cpu className="w-3 h-3 text-orange-600" />
-                <span>AI Allocation Engine</span>
+                <span>Smart Matching</span>
               </Link>
             </div>
           )}
@@ -401,29 +403,32 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileMenu }) => {
                       <Link
                         to="/login?role=intern"
                         onClick={() => setLoginDropdownOpen(false)}
-                        className="block px-3 py-2 rounded-lg hover:bg-orange-50 text-slate-800 font-semibold transition-colors"
+                        className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-orange-50 text-slate-800 font-semibold transition-colors"
                       >
-                        🎓 Student / Candidate Login
+                        <GraduationCap className="w-4 h-4 text-orange-600" />
+                        <span>Candidate Login</span>
                       </Link>
                       <Link
                         to="/login?role=company"
                         onClick={() => setLoginDropdownOpen(false)}
-                        className="block px-3 py-2 rounded-lg hover:bg-blue-50 text-slate-800 font-semibold transition-colors"
+                        className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-blue-50 text-slate-800 font-semibold transition-colors"
                       >
-                        🏢 Enterprise / Ministry Login
+                        <Building2 className="w-4 h-4 text-blue-600" />
+                        <span>Company Login</span>
                       </Link>
                       <Link
                         to="/login?role=admin"
                         onClick={() => setLoginDropdownOpen(false)}
-                        className="block px-3 py-2 rounded-lg hover:bg-purple-50 text-slate-800 font-semibold transition-colors"
+                        className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-purple-50 text-slate-800 font-semibold transition-colors"
                       >
-                        ⚡ National Admin / AI Engine
+                        <ShieldCheck className="w-4 h-4 text-purple-600" />
+                        <span>Admin Login</span>
                       </Link>
                     </div>
                   )}
                 </div>
 
-                {/* 3. Register Free Lime-Green Pill Button */}
+                {/* 3. Register Free Button */}
                 <Link
                   to="/register?role=intern"
                   className="inline-flex items-center space-x-1.5 px-5 py-2 rounded-full bg-[#84CC16] hover:bg-[#65A30D] text-white text-xs font-black transition-all shadow-xs"
@@ -461,7 +466,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileMenu }) => {
                 <strong>Zero Fee Policy:</strong> The National Internship Portal and PM Internship Scheme do not charge any registration, application, or processing fees from students.
               </p>
               <p>
-                <strong>Affirmative Action Quotas:</strong> Candidates from SC, ST, OBC, and PwD cohorts are allocated transparently under statutory national reservation guidelines.
+                <strong>Reservation Guidelines:</strong> Candidates eligible under SC, ST, OBC, EWS, and PwD categories are matched transparently as per Government of India guidelines.
               </p>
               <p>
                 <strong>Direct Benefit Transfer (DBT):</strong> Monthly stipends (₹5,000/mo) are disbursed directly to Aadhaar-seeded bank accounts through PFMS.

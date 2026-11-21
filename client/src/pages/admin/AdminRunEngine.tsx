@@ -53,7 +53,7 @@ export const AdminRunEngine: React.FC = () => {
           if (log) {
             const mappedStep = Math.min(6, Math.max(1, Math.ceil(((log.currentStep || 1) * 6) / 8)));
             setCurrentStep(mappedStep);
-            setStepMessage(log.stepMessage || 'Processing optimization vectors...');
+            setStepMessage(log.stepMessage || 'Matching in progress...');
 
             if (log.status === 'Success') {
               setIsRunning(false);
@@ -85,7 +85,7 @@ export const AdminRunEngine: React.FC = () => {
     setIsRunning(true);
     setSummary(null);
     setCurrentStep(1);
-    setStepMessage('Initializing candidate and vacancy vector space...');
+    setStepMessage('Loading candidates and available opportunities...');
 
     try {
       await api.post(endpoint);
@@ -118,7 +118,7 @@ export const AdminRunEngine: React.FC = () => {
             </h1>
           </div>
           <p className="text-xs text-saas-muted mt-1">
-            AI-powered candidate-to-opportunity matching via TF-IDF, cosine similarity, quotas, and Hungarian optimization
+            Smart matching based on applicant skills, qualification, location, and Government reservation norms
           </p>
         </div>
 
@@ -222,10 +222,10 @@ export const AdminRunEngine: React.FC = () => {
 
         <div className="mt-3 space-y-1.5 text-[11px] text-saas-muted min-h-24">
           <div className="text-saas-dim">
-            [SYS_INIT] Autonomous Allocation Daemon ready. Model: TF-IDF (n-gram 1-2) + Hungarian.
+            System status: Matching engine ready.
           </div>
           <div className="text-saas-dim">
-            [QUOTA_INIT] Category quota rules loaded. Scores are real cosine-similarity based.
+            Government guidelines and reservation norms active.
           </div>
           {isRunning && (
             <div className="text-brand-indigo-light flex items-center space-x-2">
@@ -235,14 +235,14 @@ export const AdminRunEngine: React.FC = () => {
           )}
           {summary && (
             <>
-              <div className="text-emerald-400">
-                [OPTIMIZATION_SUCCESS] Hungarian algorithm solved the globally optimal bipartite match in {formatDuration(summary.duration)}.
+              <div className="text-emerald-400 font-semibold">
+                ✓ Matching complete in {formatDuration(summary.duration)}. Best-fit assignments generated successfully.
               </div>
               <div className="text-brand-indigo-light">
-                [STATS] {summary.totalInterns || 0} profiles · {summary.totalSlots || 0} slots · mean score {summary.avgScore}%.
+                Evaluated {summary.totalInterns || 0} candidate profiles across {summary.totalSlots || 0} opportunity positions (Average fit: {summary.avgScore}%).
               </div>
               <div className="text-saas-primary font-semibold">
-                [COMMIT] {summary.totalAllocated?.toLocaleString()} candidate-position assignments committed to registry.
+                {summary.totalAllocated?.toLocaleString()} candidate placements finalized in registry.
               </div>
             </>
           )}
