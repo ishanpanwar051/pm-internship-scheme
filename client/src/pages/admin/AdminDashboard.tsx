@@ -91,7 +91,9 @@ export const AdminDashboard: React.FC = () => {
   const totalInterns = kpis.totalInterns || 12482;
   const totalCompanies = kpis.totalCompanies || 1248;
   const activeSlots = kpis.activeSlots || 4821;
-  const matchQualityScore = kpis.avgScore ? (kpis.avgScore * 100).toFixed(1) : '92.4';
+  const matchQualityScore = kpis.avgScore
+    ? (kpis.avgScore > 1 ? kpis.avgScore : kpis.avgScore * 100).toFixed(1)
+    : '92.4';
 
   const allocatedCount = kpis.totalAllocated || 3842;
   const pendingCount = Math.max(0, activeSlots - allocatedCount) || 979;
@@ -104,7 +106,7 @@ export const AdminDashboard: React.FC = () => {
       roleTitle: item.slotId?.title || 'Backend Engineering Intern',
       companyName: item.companyId?.companyName || 'TechCorp Labs',
       location: item.slotId?.location?.state || item.slotId?.location?.city || 'Bangalore',
-      score: (item.matchScore || 0.962) * 100,
+      score: (item.matchScore > 1 ? item.matchScore : (item.matchScore || 0.962) * 100),
       categoryQuota: item.quotaCategory || 'General Merit',
     });
     setIsModalOpen(true);
