@@ -54,7 +54,13 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin) || allowedOrigins.some((o) => origin.startsWith(o))) {
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.trycloudflare.com') ||
+        origin.endsWith('.github.io') ||
+        allowedOrigins.some((o) => origin.startsWith(o))
+      ) {
         return callback(null, true);
       }
       return callback(new Error('Blocked by CORS policy'));

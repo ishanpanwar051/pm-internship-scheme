@@ -4,9 +4,12 @@ const getBaseUrl = () => {
   const envUrl = (import.meta as any).env?.VITE_API_URL;
   if (envUrl) return envUrl;
 
-  // When running on GitHub Pages, connect to the live Cloudflare tunnel API
-  if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
-    return 'https://loan-concerned-flooring-arabic.trycloudflare.com/api/v1';
+  // When running on GitHub Pages or external tunnels, connect to the live Cloudflare tunnel API
+  if (
+    typeof window !== 'undefined' &&
+    (window.location.hostname.includes('github.io') || window.location.hostname.includes('trycloudflare.com'))
+  ) {
+    return 'https://vanilla-metal-adapters-task.trycloudflare.com/api/v1';
   }
 
   // Local development / proxy
