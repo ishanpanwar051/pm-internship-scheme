@@ -1,0 +1,12 @@
+node_modules
+client/node_modules
+server/node_modules
+dist
+client/dist
+.env
+Temp
+cloudflared.exe
+*.log
+__pycache__
+.DS_Store
+.vercel
