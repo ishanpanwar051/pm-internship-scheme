@@ -53,6 +53,14 @@ export const LoginPage: React.FC = () => {
     setPassword('');
   };
 
+  const fillCredentials = (roleToSet: Role, emailToSet: string, passToSet: string) => {
+    setRole(roleToSet);
+    setSearchParams({ role: roleToSet });
+    setEmail(emailToSet);
+    setPassword(passToSet);
+    toast.success(`Demo credentials filled for ${roleToSet.toUpperCase()}`);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanEmail = email.trim();
@@ -151,6 +159,50 @@ export const LoginPage: React.FC = () => {
                 National Command & AI
               </div>
             </div>
+          </button>
+        </div>
+      </div>
+
+      {/* Quick 1-Click Demo Credentials Access Bar */}
+      <div className="w-full max-w-4xl mb-4 bg-white/95 backdrop-blur-sm border border-slate-200/90 rounded-2xl p-3 shadow-xs flex flex-wrap items-center justify-between gap-2.5 text-xs">
+        <div className="flex items-center space-x-2 text-slate-800 font-bold">
+          <Sparkles className="w-4 h-4 text-orange-600 animate-pulse" />
+          <span>Quick Demo Access:</span>
+          <span className="text-[11px] text-slate-500 font-normal hidden sm:inline">(1-click auto-fill for testing)</span>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => fillCredentials('intern', 'intern1@example.com', 'Intern@123')}
+            className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all hover:scale-105 active:scale-95 flex items-center space-x-1.5 ${
+              role === 'intern'
+                ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                : 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200'
+            }`}
+          >
+            <span>🎓 Student (Aarav)</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => fillCredentials('company', 'company1@example.com', 'Company@123')}
+            className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all hover:scale-105 active:scale-95 flex items-center space-x-1.5 ${
+              role === 'company'
+                ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200'
+            }`}
+          >
+            <span>🏢 Company (TCS)</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => fillCredentials('admin', 'admin@pminternship.gov.in', 'Admin@123')}
+            className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all hover:scale-105 active:scale-95 flex items-center space-x-1.5 ${
+              role === 'admin'
+                ? 'bg-slate-900 text-amber-400 border-slate-900 shadow-xs'
+                : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-200'
+            }`}
+          >
+            <span>🏛️ National Admin</span>
           </button>
         </div>
       </div>

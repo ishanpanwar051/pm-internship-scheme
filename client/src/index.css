@@ -112,3 +112,13 @@
   fill: var(--saas-primary) !important;
   font-weight: 700 !important;
 }
+
+/* Indian National Tricolor Ribbon */
+.bg-tricolor-strip {
+  background: linear-gradient(90deg, #FF9933 0%, #FF9933 33.33%, #FFFFFF 33.33%, #FFFFFF 66.66%, #138808 66.66%, #138808 100%);
+}
+
+.gold-frame {
+  border: 3px solid #D4AF37;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.25);
+}

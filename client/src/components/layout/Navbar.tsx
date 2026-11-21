@@ -68,6 +68,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileMenu }) => {
 
   return (
     <header className="sticky top-0 z-40 bg-white shadow-xs w-full">
+      {/* National Tricolor Micro Accent Line */}
+      <div className="h-[3px] w-full bg-gradient-to-r from-[#FF9933] via-amber-100 via-45% via-white via-50% via-emerald-100 via-55% to-[#138808]" />
       {/* 1. Official Topmost Tier 1 Bar */}
       <div className="bg-[#FAFBFD] border-b border-slate-200/80 px-4 sm:px-6 lg:px-8 py-1.5 text-xs text-slate-600">
         <div className="w-full flex items-center justify-between">
@@ -431,7 +433,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileMenu }) => {
                 {/* 3. Register Free Button */}
                 <Link
                   to="/register?role=intern"
-                  className="inline-flex items-center space-x-1.5 px-5 py-2 rounded-full bg-[#84CC16] hover:bg-[#65A30D] text-white text-xs font-black transition-all shadow-xs"
+                  className="inline-flex items-center space-x-1.5 px-5 py-2 rounded-full bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-800 hover:from-blue-800 hover:to-indigo-700 text-white text-xs font-bold transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
                 >
                   <Sparkles className="w-3.5 h-3.5 fill-current" />
                   <span>Register Free</span>

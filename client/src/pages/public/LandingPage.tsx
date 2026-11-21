@@ -32,10 +32,15 @@ import MilestoneStepper from '../../components/ui/MilestoneStepper';
 
 export const LandingPage: React.FC = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [eligAge, setEligAge] = useState('22');
+  const [eligQual, setEligQual] = useState('graduate');
+  const [eligEmployed, setEligEmployed] = useState('no');
 
   const toggleFaq = (idx: number) => {
     setOpenFaq(openFaq === idx ? null : idx);
   };
+
+  const isEligible = parseInt(eligAge) >= 21 && parseInt(eligAge) <= 24 && eligEmployed === 'no';
 
   const FAQS = [
     {
@@ -69,42 +74,42 @@ export const LandingPage: React.FC = () => {
       <MoreStreamsBanner />
 
       {/* 3. Official Hero Section */}
-      <section className="relative pt-12 pb-16 px-4 sm:px-6 lg:px-8 text-center max-w-6xl mx-auto space-y-7">
+      <section className="relative pt-12 pb-14 px-4 sm:px-6 lg:px-8 text-center max-w-6xl mx-auto space-y-7">
         {/* Soft Background Radial Pastel Glows */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-gradient-to-tr from-amber-100/40 via-rose-100/30 to-indigo-100/40 blur-3xl pointer-events-none -z-10 rounded-full" />
 
         {/* Central National Internship Mission Pill */}
-        <div className="inline-flex items-center space-x-2 px-5 py-2 rounded-full bg-white border border-amber-200 shadow-2xs text-xs sm:text-sm font-bold text-amber-900">
+        <div className="inline-flex items-center space-x-2 px-5 py-2 rounded-full bg-white border border-amber-200 shadow-xs text-xs sm:text-sm font-bold text-amber-900">
           <span className="text-base">🇮🇳</span>
-          <span className="tracking-wider uppercase">NATIONAL INTERNSHIP MISSION</span>
+          <span className="tracking-wider uppercase">PRIME MINISTER'S INTERNSHIP SCHEME · VIKSIT BHARAT 2047</span>
         </div>
 
-        {/* Main Massive Headline from Reference Screenshot */}
-        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-[1.14] max-w-5xl mx-auto">
-          The Government of India's vision is to provide{' '}
-          <span className="text-[#F43F5E] underline decoration-[#F43F5E]/30 underline-offset-8">
-            1 crore internships
+        {/* Main Massive Headline */}
+        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-[1.15] max-w-5xl mx-auto">
+          The Government of India's Vision is to Provide{' '}
+          <span className="bg-gradient-to-r from-orange-600 via-rose-600 to-indigo-600 bg-clip-text text-transparent underline decoration-orange-300 underline-offset-8">
+            1 Crore Internships
           </span>{' '}
           by 2027
         </h1>
 
-        {/* Official Subtitle from Reference Screenshot */}
+        {/* Official Subtitle */}
         <p className="text-sm sm:text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed font-normal">
-          Delivered through the National Internship Portal by AICTE, Ministry of Education & Ministry of Corporate Affairs — for AICTE, UGC, IGNOU and students across India.
+          Delivered through the National Internship Portal by AICTE, Ministry of Education & Ministry of Corporate Affairs — empowering youth from all 28 States and 8 UTs with transparent industry access.
         </p>
 
-        {/* Tricolor Dashes from Screenshot */}
+        {/* Tricolor Dashes */}
         <div className="flex items-center justify-center space-x-2 pt-1">
-          <span className="w-8 h-1.5 rounded-full bg-[#FF9933]" />
-          <span className="w-8 h-1.5 rounded-full bg-slate-300" />
-          <span className="w-8 h-1.5 rounded-full bg-[#138808]" />
+          <span className="w-10 h-1.5 rounded-full bg-[#FF9933]" />
+          <span className="w-10 h-1.5 rounded-full bg-slate-300" />
+          <span className="w-10 h-1.5 rounded-full bg-[#138808]" />
         </div>
 
         {/* Primary Action Buttons */}
-        <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
+        <div className="pt-2 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
           <Link
             to="/register?role=intern"
-            className="px-8 py-4 rounded-full bg-[#84CC16] hover:bg-[#65A30D] text-white text-sm font-black transition-all shadow-md hover:shadow-lg flex items-center space-x-2 transform hover:-translate-y-0.5"
+            className="px-8 py-4 rounded-full bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-800 hover:from-blue-800 hover:to-indigo-700 text-white text-sm font-black transition-all shadow-md hover:shadow-lg flex items-center space-x-2 transform hover:-translate-y-0.5"
           >
             <span>Register Free as Candidate</span>
             <ArrowRight className="w-5 h-5" />
@@ -112,11 +117,208 @@ export const LandingPage: React.FC = () => {
 
           <Link
             to="/login?role=company"
-            className="px-8 py-4 rounded-full bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 text-sm font-bold transition-all shadow-xs flex items-center space-x-2"
+            className="px-8 py-4 rounded-full bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 text-sm font-bold transition-all shadow-xs flex items-center space-x-2 hover:-translate-y-0.5"
           >
             <Building2 className="w-5 h-5 text-slate-600" />
             <span>Enterprise Host Partner</span>
           </Link>
+
+          <Link
+            to="/intern/explore"
+            className="px-6 py-4 rounded-full bg-orange-50 hover:bg-orange-100 text-orange-900 border border-orange-200 text-sm font-bold transition-all shadow-xs flex items-center space-x-2 hover:-translate-y-0.5"
+          >
+            <Briefcase className="w-4 h-4 text-orange-600" />
+            <span>Browse 1.25L+ Openings</span>
+          </Link>
+        </div>
+
+        {/* Real-time Hero Statistics Grid */}
+        <div className="pt-6 max-w-5xl mx-auto">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-left">
+            <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs hover:border-blue-300 transition-all">
+              <div className="text-2xl sm:text-3xl font-black text-blue-700 font-mono">1,25,000+</div>
+              <div className="text-xs font-bold text-slate-900 mt-1">Active Vacancies</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">Across 730+ Districts</div>
+            </div>
+            <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs hover:border-emerald-300 transition-all">
+              <div className="text-2xl sm:text-3xl font-black text-emerald-700 font-mono">500+</div>
+              <div className="text-xs font-bold text-slate-900 mt-1">Top Enterprises</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">TCS, Reliance, HDFC, L&T</div>
+            </div>
+            <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs hover:border-amber-300 transition-all">
+              <div className="text-2xl sm:text-3xl font-black text-amber-600 font-mono">₹5,000/mo</div>
+              <div className="text-xs font-bold text-slate-900 mt-1">Direct Bank DBT</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">+ ₹6,000 One-time Grant</div>
+            </div>
+            <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs hover:border-purple-300 transition-all">
+              <div className="text-2xl sm:text-3xl font-black text-purple-700 font-mono">100% Free</div>
+              <div className="text-xs font-bold text-slate-900 mt-1">Zero Fee Policy</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">Direct Government Initiative</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Top Corporate Partners Showcase */}
+      <section className="py-6 border-y border-slate-200/80 bg-white/70">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <div className="text-left">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                Industry Collaboration
+              </span>
+              <h3 className="text-sm sm:text-base font-extrabold text-slate-900">
+                Partnered with India's Top 500 Corporate Organizations
+              </h3>
+            </div>
+            <Link
+              to="/login?role=company"
+              className="text-xs font-bold text-blue-700 hover:text-blue-800 hover:underline flex items-center space-x-1"
+            >
+              <span>Host Interns from Your Company</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
+            {[
+              'Tata Consultancy Services',
+              'Infosys Limited',
+              'Reliance Industries',
+              'Larsen & Toubro',
+              'State Bank of India',
+              'HDFC Bank',
+              'Mahindra & Mahindra',
+              'Wipro Digital',
+              'ITC Agri-Business',
+              'HCL Technologies',
+              'Sun Pharma',
+              'Delhivery Logistics',
+            ].map((corp, i) => (
+              <span
+                key={i}
+                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-800 shadow-2xs transition-colors"
+              >
+                <Building2 className="w-3.5 h-3.5 text-blue-600" />
+                <span>{corp}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive 5-Second Eligibility Checker */}
+      <section className="py-10 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+        <div className="bg-gradient-to-br from-white via-blue-50/30 to-amber-50/30 rounded-3xl border border-blue-200/80 p-6 sm:p-8 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200">
+            <div className="text-left">
+              <div className="inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[11px] font-bold uppercase tracking-wider mb-1">
+                <Sparkles className="w-3 h-3 text-blue-600" />
+                <span>Interactive Eligibility Check</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                Check Your Eligibility in 5 Seconds
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
+                Select your age, education, and employment status to verify if you qualify for the scheme.
+              </p>
+            </div>
+            <div className="text-right shrink-0">
+              <span className="text-[11px] font-bold text-slate-500 uppercase">Govt Norms</span>
+              <div className="text-xs font-bold text-emerald-700">100% Free & Transparent</div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left mb-6">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">
+                Your Age
+              </label>
+              <select
+                value={eligAge}
+                onChange={(e) => setEligAge(e.target.value)}
+                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white text-slate-900 font-semibold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none transition-all cursor-pointer"
+              >
+                <option value="20">20 Years</option>
+                <option value="21">21 Years (Eligible)</option>
+                <option value="22">22 Years (Eligible)</option>
+                <option value="23">23 Years (Eligible)</option>
+                <option value="24">24 Years (Eligible)</option>
+                <option value="25">25 Years</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">
+                Qualification
+              </label>
+              <select
+                value={eligQual}
+                onChange={(e) => setEligQual(e.target.value)}
+                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white text-slate-900 font-semibold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none transition-all cursor-pointer"
+              >
+                <option value="10th">10th / Secondary Pass</option>
+                <option value="12th">12th / Higher Secondary</option>
+                <option value="iti">ITI / Polytechnic Diploma</option>
+                <option value="graduate">Graduate (BA/BSc/BCom/BBA/BTech)</option>
+                <option value="postgraduate">Postgraduate Degree</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">
+                Employment Status
+              </label>
+              <select
+                value={eligEmployed}
+                onChange={(e) => setEligEmployed(e.target.value)}
+                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white text-slate-900 font-semibold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none transition-all cursor-pointer"
+              >
+                <option value="no">Not currently in full-time job</option>
+                <option value="yes">Currently in full-time job</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Outcome Card */}
+          <div
+            className={`p-4 rounded-2xl border transition-all flex flex-col sm:flex-row items-center justify-between gap-4 ${
+              isEligible
+                ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                : 'bg-amber-50 border-amber-300 text-amber-900'
+            }`}
+          >
+            <div className="flex items-center space-x-3 text-left">
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shrink-0 ${
+                  isEligible ? 'bg-emerald-600' : 'bg-amber-600'
+                }`}
+              >
+                {isEligible ? '✓' : '!'}
+              </div>
+              <div>
+                <div className="font-extrabold text-sm sm:text-base">
+                  {isEligible
+                    ? '🎉 Congratulations! You are Eligible to Apply.'
+                    : 'Candidate Criteria Note: Scheme is open for age 21–24 not in full-time jobs.'}
+                </div>
+                <div className="text-xs opacity-90 mt-0.5">
+                  {isEligible
+                    ? 'You can receive ₹5,000/month DBT financial assistance + ₹6,000 incidental grant.'
+                    : 'Check guidelines or register to receive updates on upcoming eligibility batches.'}
+                </div>
+              </div>
+            </div>
+
+            {isEligible && (
+              <Link
+                to="/register?role=intern"
+                className="px-6 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shrink-0 transition-colors shadow-xs flex items-center space-x-1.5"
+              >
+                <span>Apply for Internships</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            )}
+          </div>
         </div>
       </section>
 
