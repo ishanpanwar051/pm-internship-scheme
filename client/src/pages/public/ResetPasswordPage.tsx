@@ -35,51 +35,50 @@ export const ResetPasswordPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center p-4 relative">
-      <div className="absolute inset-0 bg-saas-radial-glow pointer-events-none" />
-      <div className="max-w-md w-full p-8 bg-saas-card rounded-2xl shadow-card border border-saas-border space-y-6 relative">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-indigo to-brand-purple text-white flex items-center justify-center mx-auto mb-5 shadow-glow-indigo">
+    <div className="min-h-[80vh] flex items-center justify-center p-4 relative bg-slate-50">
+      <div className="max-w-md w-full p-8 bg-white rounded-2xl shadow-xl border border-slate-200 space-y-6 relative">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white flex items-center justify-center mx-auto mb-5 shadow-md shadow-indigo-500/20">
           <Sparkles className="w-5 h-5" />
         </div>
 
         <div>
-          <h2 className="text-xl font-bold text-white">Set New Password</h2>
-          <p className="text-xs text-saas-muted mt-1">
+          <h2 className="text-xl font-bold text-slate-900">Set New Password</h2>
+          <p className="text-xs text-slate-500 mt-1">
             Choose a new secure password to regain platform access.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-saas-muted uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
               New Password
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 absolute left-3 top-3 text-saas-dim" />
+              <Lock className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-9 pr-4 py-2.5 text-xs rounded-xl border border-saas-border bg-saas-surface outline-none focus:ring-2 focus:ring-brand-indigo/30 focus:border-brand-indigo placeholder-saas-dim text-white transition-all"
+                className="w-full pl-9 pr-4 py-2.5 text-xs rounded-xl border border-slate-300 bg-slate-50 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:bg-white placeholder-slate-400 text-slate-900 font-medium transition-all"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-saas-muted uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
               Confirm New Password
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 absolute left-3 top-3 text-saas-dim" />
+              <Lock className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
               <input
                 type="password"
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-9 pr-4 py-2.5 text-xs rounded-xl border border-saas-border bg-saas-surface outline-none focus:ring-2 focus:ring-brand-indigo/30 focus:border-brand-indigo placeholder-saas-dim text-white transition-all"
+                className="w-full pl-9 pr-4 py-2.5 text-xs rounded-xl border border-slate-300 bg-slate-50 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:bg-white placeholder-slate-400 text-slate-900 font-medium transition-all"
               />
             </div>
           </div>
@@ -87,7 +86,7 @@ export const ResetPasswordPage: React.FC = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-2.5 px-4 rounded-xl bg-brand-indigo hover:bg-brand-indigo-light text-white font-bold text-xs uppercase tracking-wider shadow-glow-indigo transition-all flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-60"
+            className="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-indigo-500/20 transition-all flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-60"
           >
             {isLoading ? (
               <span className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
