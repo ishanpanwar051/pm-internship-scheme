@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from './store/authStore';
 
@@ -49,7 +49,7 @@ export const App: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <BrowserRouter>
+      <Router>
         <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
         <Routes>
           <Route element={<AppLayout />}>
@@ -222,7 +222,7 @@ export const App: React.FC = () => {
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
-      </BrowserRouter>
+      </Router>
     </ErrorBoundary>
   );
 };
