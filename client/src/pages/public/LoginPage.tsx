@@ -240,9 +240,24 @@ export const LoginPage: React.FC = () => {
                 </div>
 
                 <h3 className="text-xl font-black text-slate-900">Sign in to Candidate Portal</h3>
-                <p className="text-xs text-slate-500 mt-1 mb-5">
+                <p className="text-xs text-slate-500 mt-1 mb-3">
                   Access your profile, verify your skills, and view your real-time company allocations.
                 </p>
+
+                {/* Demo Quick-Fill Helper */}
+                <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-200/80 flex items-center justify-between mb-4">
+                  <div className="text-left">
+                    <div className="text-[10px] font-extrabold uppercase text-blue-800 tracking-wider">Demo Student Account</div>
+                    <div className="text-xs font-mono text-blue-900 font-semibold">intern1@gmail.com · intern@123</div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setEmail('intern1@gmail.com'); setPassword('intern@123'); }}
+                    className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px] shadow-sm transition-all cursor-pointer"
+                  >
+                    Auto-Fill
+                  </button>
+                </div>
 
                 {/* Custom Credentials Form */}
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -393,9 +408,24 @@ export const LoginPage: React.FC = () => {
                 </div>
 
                 <h3 className="text-xl font-black text-slate-900">Partner Corporate Login</h3>
-                <p className="text-xs text-slate-500 mt-1 mb-5">
+                <p className="text-xs text-slate-500 mt-1 mb-3">
                   Sign in with your registered corporate email or CIN account to manage host slots.
                 </p>
+
+                {/* Demo Quick-Fill Helper */}
+                <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-between mb-4">
+                  <div className="text-left">
+                    <div className="text-[10px] font-extrabold uppercase text-emerald-800 tracking-wider">Demo Corporate Account</div>
+                    <div className="text-xs font-mono text-emerald-900 font-semibold">company1@example.com · Company@123</div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setEmail('company1@example.com'); setPassword('Company@123'); }}
+                    className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] shadow-sm transition-all cursor-pointer"
+                  >
+                    Auto-Fill
+                  </button>
+                </div>
 
                 {/* Custom Credentials Form */}
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -555,9 +585,24 @@ export const LoginPage: React.FC = () => {
                 </div>
 
                 <h3 className="text-xl font-black text-slate-900">National Admin Login</h3>
-                <p className="text-xs text-slate-500 mt-1 mb-5">
+                <p className="text-xs text-slate-500 mt-1 mb-3">
                   Authorized government officers & system administrators only.
                 </p>
+
+                {/* Demo Quick-Fill Helper */}
+                <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200/80 flex items-center justify-between mb-4">
+                  <div className="text-left">
+                    <div className="text-[10px] font-extrabold uppercase text-amber-800 tracking-wider">Official Admin Account</div>
+                    <div className="text-xs font-mono text-amber-900 font-semibold">admin@pminternship.gov.in · Admin@123</div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setEmail('admin@pminternship.gov.in'); setPassword('Admin@123'); }}
+                    className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold text-[11px] shadow-sm transition-all cursor-pointer"
+                  >
+                    Auto-Fill
+                  </button>
+                </div>
 
                 {/* Custom Credentials Form */}
                 <form onSubmit={handleSubmit} className="space-y-4">
